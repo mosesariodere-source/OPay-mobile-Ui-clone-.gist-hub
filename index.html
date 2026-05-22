@@ -4,9 +4,212 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OPay Mobile App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>OPay Mobile App</h1>
-    <p>Your file has been created successfully.</p>
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page active">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="page-content login-content">
+                <div class="login-container">
+                    <h1>OPay</h1>
+                    <p class="login-subtitle">Mobile Banking</p>
+                    
+                    <div class="login-form">
+                        <div class="form-group">
+                            <label>Enter your 6-digit PIN</label>
+                            <div class="pin-input-group">
+                                <input type="password" id="pinInput" placeholder="000000" maxlength="6">
+                                <button id="togglePin" class="toggle-btn">👁️</button>
+                            </div>
+                        </div>
+                        <button id="loginBtn" class="btn btn-primary">Login</button>
+                        <p class="login-help">Demo PIN: Any 6 digits (e.g., 123456)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-home"></div>
+        </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="page-content">
+                <div class="header">
+                    <div class="header-top">
+                        <h2>OPay</h2>
+                        <button id="notificationBtn" class="icon-btn">🔔</button>
+                    </div>
+                </div>
+
+                <div class="balance-card">
+                    <p class="balance-label">Account Balance</p>
+                    <div class="balance-display">
+                        <h1 id="balanceAmount">₦20,218.98</h1>
+                        <button id="toggleBalance" class="toggle-balance">👁️</button>
+                    </div>
+                    <p id="userName" class="user-name">John Doe</p>
+                </div>
+
+                <div class="quick-actions">
+                    <button id="transferBtn" class="action-btn">
+                        <span class="icon">💸</span>
+                        <span>Transfer</span>
+                    </button>
+                    <button id="withdrawBtn" class="action-btn">
+                        <span class="icon">💰</span>
+                        <span>Withdraw</span>
+                    </button>
+                    <button id="airtimeBtn" class="action-btn">
+                        <span class="icon">📱</span>
+                        <span>Airtime</span>
+                    </button>
+                    <button id="dataBtn" class="action-btn">
+                        <span class="icon">📡</span>
+                        <span>Data</span>
+                    </button>
+                </div>
+
+                <div class="section">
+                    <h3>Recent Transactions</h3>
+                    <div class="transaction-item">
+                        <span>Transfer to John</span>
+                        <span class="amount">-₦5,000</span>
+                    </div>
+                    <div class="transaction-item">
+                        <span>Airtime Purchase</span>
+                        <span class="amount">-₦1,000</span>
+                    </div>
+                    <div class="transaction-item">
+                        <span>Salary Credit</span>
+                        <span class="amount success">+₦50,000</span>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-home"></div>
+        </div>
+    </div>
+
+    <!-- CARDS PAGE -->
+    <div id="cardsPage" class="page">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="page-content">
+                <div class="header">
+                    <h2>My Cards</h2>
+                </div>
+
+                <div class="card-container">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <span>OPay Card</span>
+                            <span class="card-type">DEBIT</span>
+                        </div>
+                        <div class="card-number">5234 •••• •••• 8901</div>
+                        <div class="card-footer">
+                            <span>JOHN DOE</span>
+                            <span>12/26</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Card Actions</h3>
+                    <button class="action-btn full-width">🔒 Lock Card</button>
+                    <button class="action-btn full-width">📋 View Details</button>
+                    <button class="action-btn full-width">⚙️ Settings</button>
+                </div>
+            </div>
+            <div class="phone-home"></div>
+        </div>
+    </div>
+
+    <!-- REWARDS PAGE -->
+    <div id="rewardsPage" class="page">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="page-content">
+                <div class="header">
+                    <h2>Rewards</h2>
+                </div>
+
+                <div class="rewards-container">
+                    <div class="reward-card">
+                        <h3>🎁 Welcome Bonus</h3>
+                        <p>Get ₦500 cashback on your first transfer</p>
+                        <button class="btn-small">Claim</button>
+                    </div>
+                    <div class="reward-card">
+                        <h3>🏆 Referral Program</h3>
+                        <p>Earn ₦1,000 for each friend you refer</p>
+                        <button class="btn-small">Share</button>
+                    </div>
+                    <div class="reward-card">
+                        <h3>💎 VIP Status</h3>
+                        <p>Unlock exclusive benefits and rewards</p>
+                        <button class="btn-small">Learn More</button>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-home"></div>
+        </div>
+    </div>
+
+    <!-- PROFILE PAGE -->
+    <div id="profilePage" class="page">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="page-content">
+                <div class="header">
+                    <h2>Profile</h2>
+                </div>
+
+                <div class="profile-section">
+                    <div class="profile-avatar">👤</div>
+                    <h3 id="profileName">John Doe</h3>
+                    <p class="profile-email">john@example.com</p>
+                </div>
+
+                <div class="section">
+                    <h3>Menu</h3>
+                    <button id="settingsMenu" class="menu-item">⚙️ Settings</button>
+                    <button id="securityMenu" class="menu-item">🔒 Security</button>
+                    <button id="supportMenu" class="menu-item">💬 Help & Support</button>
+                    <button id="aboutMenu" class="menu-item">ℹ️ About</button>
+                </div>
+
+                <button id="logoutBtn" class="btn btn-danger full-width">Logout</button>
+            </div>
+            <div class="phone-home"></div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-item active" data-page="homePage">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" data-page="cardsPage">
+            <span class="icon">💳</span>
+            <span>Cards</span>
+        </button>
+        <button class="nav-item" data-page="rewardsPage">
+            <span class="icon">🎁</span>
+            <span>Rewards</span>
+        </button>
+        <button class="nav-item" data-page="profilePage">
+            <span class="icon">👤</span>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script_Version1.js"></script>
 </body>
 </html>
