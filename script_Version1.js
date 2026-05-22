@@ -67,37 +67,50 @@ function setupEventListeners() {
     logoutBtn.addEventListener('click', handleLogout);
 
     // Quick Action Buttons
-    document.getElementById('transferBtn').addEventListener('click', () => {
-        showToast('Transfer feature coming soon!');
-    });
-    document.getElementById('withdrawBtn').addEventListener('click', () => {
-        showToast('Withdrawal feature coming soon!');
-    });
-    document.getElementById('airtimeBtn').addEventListener('click', () => {
-        showToast('🎉 Airtime purchase initiated!');
-    });
-    document.getElementById('dataBtn').addEventListener('click', () => {
-        showToast('📡 Data bundle selected!');
-    });
+    const transferBtn = document.getElementById('transferBtn');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const airtimeBtn = document.getElementById('airtimeBtn');
+    const dataBtn = document.getElementById('dataBtn');
+
+    if (transferBtn) {
+        transferBtn.addEventListener('click', () => {
+            openTransferModal();
+        });
+    }
+    if (withdrawBtn) {
+        withdrawBtn.addEventListener('click', () => {
+            showToast('💸 Withdrawal feature coming soon!');
+        });
+    }
+    if (airtimeBtn) {
+        airtimeBtn.addEventListener('click', () => {
+            showToast('🎉 Airtime purchase initiated!');
+        });
+    }
+    if (dataBtn) {
+        dataBtn.addEventListener('click', () => {
+            showToast('📡 Data bundle selected!');
+        });
+    }
 
     // Menu Items
-    document.getElementById('settingsMenu').addEventListener('click', () => {
-        showToast('Settings page opening...');
-    });
-    document.getElementById('securityMenu').addEventListener('click', () => {
-        showToast('🔒 Security settings');
-    });
-    document.getElementById('supportMenu').addEventListener('click', () => {
-        showToast('💬 Opening help center...');
-    });
-    document.getElementById('aboutMenu').addEventListener('click', () => {
-        showToast('ℹ️ OPay v1.0.0');
-    });
+    const settingsMenu = document.getElementById('settingsMenu');
+    const securityMenu = document.getElementById('securityMenu');
+    const supportMenu = document.getElementById('supportMenu');
+    const aboutMenu = document.getElementById('aboutMenu');
+
+    if (settingsMenu) settingsMenu.addEventListener('click', () => showToast('⚙️ Settings page opening...'));
+    if (securityMenu) securityMenu.addEventListener('click', () => showToast('🔒 Security settings'));
+    if (supportMenu) supportMenu.addEventListener('click', () => showToast('💬 Opening help center...'));
+    if (aboutMenu) aboutMenu.addEventListener('click', () => showToast('ℹ️ OPay v1.0.0'));
 
     // Notification Button
-    document.getElementById('notificationBtn').addEventListener('click', () => {
-        showToast('📲 No new notifications');
-    });
+    const notificationBtn = document.getElementById('notificationBtn');
+    if (notificationBtn) {
+        notificationBtn.addEventListener('click', () => {
+            showToast('📲 No new notifications');
+        });
+    }
 
     // Keyboard Navigation
     document.addEventListener('keydown', (e) => {
@@ -114,6 +127,186 @@ function setupEventListeners() {
             showToast('✅ Reward claimed successfully!');
         });
     });
+}
+
+// ==================== TRANSFER MODAL ====================
+
+function openTransferModal() {
+    const modal = document.createElement('div');
+    modal.id = 'transferModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+    `;
+
+    modal.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        ">
+            <h2 style="margin-bottom: 20px; font-size: 20px;">Transfer Money</h2>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Recipient Account</label>
+                <input type="text" id="recipientAccount" placeholder="Enter account number" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                    font-size: 14px;
+                ">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Recipient Name</label>
+                <input type="text" id="recipientName" placeholder="Enter recipient name" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                    font-size: 14px;
+                ">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Amount (₦)</label>
+                <input type="number" id="transferAmount" placeholder="0.00" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                    font-size: 14px;
+                ">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Narration (Optional)</label>
+                <textarea id="transferNote" placeholder="What is this transfer for?" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                    font-size: 14px;
+                    resize: vertical;
+                    font-family: inherit;
+                "></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeTransferModal()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: #f0f0f0;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Cancel</button>
+                <button onclick="processTransfer()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #00d4aa 0%, #0099cc 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Transfer</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeTransferModal();
+        }
+    });
+}
+
+function closeTransferModal() {
+    const modal = document.getElementById('transferModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function processTransfer() {
+    const recipientAccount = document.getElementById('recipientAccount').value.trim();
+    const recipientName = document.getElementById('recipientName').value.trim();
+    const transferAmount = parseFloat(document.getElementById('transferAmount').value);
+    const transferNote = document.getElementById('transferNote').value.trim();
+
+    // Validation
+    if (!recipientAccount) {
+        showToast('❌ Please enter recipient account', 'error');
+        return;
+    }
+    if (!recipientName) {
+        showToast('❌ Please enter recipient name', 'error');
+        return;
+    }
+    if (!transferAmount || transferAmount <= 0) {
+        showToast('❌ Please enter a valid amount', 'error');
+        return;
+    }
+    if (transferAmount > appState.balance) {
+        showToast('❌ Insufficient balance', 'error');
+        return;
+    }
+
+    // Process transfer
+    appState.balance -= transferAmount;
+    if (appState.balanceVisible) {
+        balanceAmount.textContent = `₦${appState.balance.toFixed(2)}`;
+    }
+
+    // Show success
+    closeTransferModal();
+    showToast(`✅ Transfer of ₦${transferAmount.toFixed(2)} to ${recipientName} successful!`, 'success');
+
+    // Add transaction
+    addTransactionHistory(`Transfer to ${recipientName}`, `-₦${transferAmount.toFixed(2)}`);
+}
+
+function addTransactionHistory(description, amount) {
+    const transactionsSection = document.querySelector('.section');
+    if (!transactionsSection) return;
+
+    const newTransaction = document.createElement('div');
+    newTransaction.className = 'transaction-item';
+    newTransaction.style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        animation: slideInUp 0.3s ease-out;
+    `;
+    newTransaction.innerHTML = `
+        <span>${description}</span>
+        <span class="amount" style="font-weight: 600; color: #ff6b6b;">${amount}</span>
+    `;
+
+    const firstTransaction = transactionsSection.querySelector('.transaction-item');
+    if (firstTransaction) {
+        firstTransaction.parentNode.insertBefore(newTransaction, firstTransaction);
+    }
 }
 
 // ==================== LOGIN HANDLERS ====================
@@ -175,11 +368,9 @@ function toggleBalanceVisibility() {
     
     if (appState.balanceVisible) {
         balanceAmount.textContent = `₦${appState.balance.toFixed(2)}`;
-        availableAmount.textContent = `₦${appState.balance.toFixed(2)}`;
         toggleBalance.textContent = '👁️';
     } else {
         balanceAmount.textContent = '••••••';
-        availableAmount.textContent = '••••••';
         toggleBalance.textContent = '👁️‍🗨️';
     }
 }
@@ -277,29 +468,6 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-// ==================== INTERACTION ANIMATIONS ====================
-
-// Add ripple effect to buttons
-document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', function(e) {
-        // Visual feedback already handled by CSS :active
-        const rect = this.getBoundingClientRect();
-        
-        // Add subtle feedback
-        this.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-            this.style.transform = '';
-        }, 100);
-    });
-});
-
-// Add transaction animation
-const transactionItems = document.querySelectorAll('.transaction-item');
-transactionItems.forEach((item, index) => {
-    item.style.animation = `slideInUp 0.5s ease-out ${index * 0.1}s forwards`;
-    item.style.opacity = '0';
-});
-
 // ==================== SWIPE NAVIGATION ====================
 
 let touchStartX = 0;
@@ -322,56 +490,12 @@ function handleSwipe() {
 
     if (Math.abs(difference) > swipeThreshold) {
         if (difference > 0) {
-            // Swiped left - go to next page
             navigateNextPage();
         } else {
-            // Swiped right - go to previous page
             navigatePreviousPage();
         }
     }
 }
-
-// ==================== UTILITY FUNCTIONS ====================
-
-// Simulate real-time updates
-function simulateRealTimeUpdates() {
-    if (!appState.isLoggedIn) return;
-
-    // Random balance fluctuation (for demo)
-    const randomChange = (Math.random() - 0.5) * 100;
-    appState.balance += randomChange;
-    
-    if (appState.balanceVisible) {
-        balanceAmount.textContent = `₦${appState.balance.toFixed(2)}`;
-        availableAmount.textContent = `₦${appState.balance.toFixed(2)}`;
-    }
-}
-
-// Update time periodically
-function updateTime() {
-    const now = new Date();
-    const time = now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-    });
-    
-    // Could be used to update a time display if added
-    return time;
-}
-
-// ==================== ACCESSIBILITY ====================
-
-// Improve keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Tab') {
-        document.body.classList.add('keyboard-nav');
-    }
-});
-
-document.addEventListener('mousedown', () => {
-    document.body.classList.remove('keyboard-nav');
-});
 
 // ==================== EASTER EGG ====================
 
@@ -390,57 +514,10 @@ document.addEventListener('keydown', (e) => {
 
 function activateEasterEgg() {
     showToast('🌈 You found the Easter egg! Congratulations! 🎉');
-    document.body.style.animation = 'rainbow 3s ease-in-out';
 }
-
-// Add rainbow animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes rainbow {
-        0% { filter: hue-rotate(0deg); }
-        25% { filter: hue-rotate(90deg); }
-        50% { filter: hue-rotate(180deg); }
-        75% { filter: hue-rotate(270deg); }
-        100% { filter: hue-rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
-
-// ==================== PERFORMANCE OPTIMIZATION ====================
-
-// Lazy load images if needed
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                observer.unobserve(img);
-            }
-        });
-    });
-
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-// ==================== PAGE VISIBILITY ====================
-
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        // App backgrounded
-        console.log('App backgrounded');
-    } else {
-        // App resumed
-        if (appState.isLoggedIn) {
-            showToast('Welcome back! 👋');
-        }
-    }
-});
 
 // ==================== CONSOLE WELCOME ====================
 
 console.log('%c🚀 OPay Mobile App', 'color: #00d4aa; font-size: 20px; font-weight: bold;');
-console.log('%cWelcome to OPay! Try the Konami code: ↑↑↓↓←→←→BA', 'color: #00d4aa; font-size: 12px;');
-console.log('%cDev Tip: Use arrow keys to navigate pages once logged in', 'color: #f59e0b; font-size: 12px;');
+console.log('%cTransfer feature is now working!', 'color: #00d4aa; font-size: 12px;');
+console.log('%cTry: Arrow keys to navigate, Swipe on mobile', 'color: #f59e0b; font-size: 12px;');
