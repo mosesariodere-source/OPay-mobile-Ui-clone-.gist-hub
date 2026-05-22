@@ -275,12 +275,210 @@ function processTransfer() {
         balanceAmount.textContent = `₦${appState.balance.toFixed(2)}`;
     }
 
-    // Show success
+    // Close modal
     closeTransferModal();
-    showToast(`✅ Transfer of ₦${transferAmount.toFixed(2)} to ${recipientName} successful!`, 'success');
 
-    // Add transaction
+    // Show receipt
+    showTransactionReceipt({
+        type: 'Transfer',
+        recipient: recipientName,
+        account: recipientAccount,
+        amount: transferAmount,
+        note: transferNote,
+        newBalance: appState.balance
+    });
+
+    // Add transaction to history
     addTransactionHistory(`Transfer to ${recipientName}`, `-₦${transferAmount.toFixed(2)}`);
+}
+
+// ==================== RECEIPT MODAL ====================
+
+function showTransactionReceipt(data) {
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
+    const date = now.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+    const transactionRef = 'OPY' + Math.random().toString(36).substring(2, 11).toUpperCase();
+
+    const modal = document.createElement('div');
+    modal.id = 'receiptModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+    `;
+
+    modal.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        ">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+                <h2 style="font-size: 22px; color: #333; margin: 0;">Transaction Successful</h2>
+            </div>
+
+            <div style="
+                background: linear-gradient(135deg, #00d4aa 0%, #0099cc 100%);
+                color: white;
+                padding: 20px;
+                border-radius: 15px;
+                margin-bottom: 20px;
+            ">
+                <div style="font-size: 12px; opacity: 0.9; margin-bottom: 10px;">Amount Transferred</div>
+                <div style="font-size: 32px; font-weight: bold;">₦${data.amount.toFixed(2)}</div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 3px;">Transaction Type</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #333;">${data.type}</div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 3px;">Recipient</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #333;">${data.recipient}</div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 3px;">Account Number</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #333;">${data.account}</div>
+                </div>
+
+                ${data.note ? `
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 3px;">Description</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #333;">${data.note}</div>
+                </div>
+                ` : ''}
+
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 3px;">Reference</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #333; font-family: monospace;">${transactionRef}</div>
+                </div>
+
+                <div style="margin-bottom: 0;">
+                    <div style="font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 3px;">Date & Time</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #333;">${date} at ${time}</div>
+                </div>
+            </div>
+
+            <div style="background: #f0f8ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                <div style="font-size: 12px; color: #0099cc; margin-bottom: 5px;">New Account Balance</div>
+                <div style="font-size: 20px; font-weight: bold; color: #0099cc;">₦${data.newBalance.toFixed(2)}</div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="downloadReceipt('${transactionRef}', '${data.type}', '${data.recipient}', '₦${data.amount.toFixed(2)}', '${date}', '${time}')" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: #f0f0f0;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">📥 Download</button>
+                <button onclick="shareReceipt('Transfer of ₦${data.amount.toFixed(2)} to ${data.recipient} - Ref: ${transactionRef}')" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: #f0f0f0;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">📤 Share</button>
+                <button onclick="closeReceipt()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #00d4aa 0%, #0099cc 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Done</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeReceipt();
+        }
+    });
+}
+
+function closeReceipt() {
+    const modal = document.getElementById('receiptModal');
+    if (modal) {
+        modal.remove();
+    }
+    showToast('✅ Transaction completed successfully!', 'success');
+}
+
+function downloadReceipt(ref, type, recipient, amount, date, time) {
+    const receiptText = `
+OPAY TRANSACTION RECEIPT
+=======================
+Transaction Type: ${type}
+Reference: ${ref}
+Date: ${date}
+Time: ${time}
+
+DETAILS
+-------
+Recipient: ${recipient}
+Amount: ${amount}
+
+Status: SUCCESSFUL
+
+Thank you for using OPay!
+    `.trim();
+
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(receiptText));
+    element.setAttribute('download', `OPay-Receipt-${ref}.txt`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    showToast('📥 Receipt downloaded!', 'success');
+}
+
+function shareReceipt(text) {
+    if (navigator.share) {
+        navigator.share({
+            title: 'OPay Transaction Receipt',
+            text: text
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('📋 Receipt copied to clipboard!', 'success');
+        });
+    }
 }
 
 function addTransactionHistory(description, amount) {
@@ -519,5 +717,5 @@ function activateEasterEgg() {
 // ==================== CONSOLE WELCOME ====================
 
 console.log('%c🚀 OPay Mobile App', 'color: #00d4aa; font-size: 20px; font-weight: bold;');
-console.log('%cTransfer feature is now working!', 'color: #00d4aa; font-size: 12px;');
+console.log('%cTransfer feature with receipt is now working!', 'color: #00d4aa; font-size: 12px;');
 console.log('%cTry: Arrow keys to navigate, Swipe on mobile', 'color: #f59e0b; font-size: 12px;');
